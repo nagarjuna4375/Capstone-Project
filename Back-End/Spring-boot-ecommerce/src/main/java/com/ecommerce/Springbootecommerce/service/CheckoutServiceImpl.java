@@ -1,6 +1,6 @@
 package com.ecommerce.Springbootecommerce.service;
 
-import com.ecommerce.Springbootecommerce.dao.CountryRepository;
+
 import com.ecommerce.Springbootecommerce.dao.CustomerRepository;
 import com.ecommerce.Springbootecommerce.dto.Purchase;
 import com.ecommerce.Springbootecommerce.dto.PurchaseResponse;
@@ -43,6 +43,17 @@ public class CheckoutServiceImpl implements CheckoutService {
 
         // populate customer with order
         Customer customer = purchase.getCustomer();
+
+        // check if this is an existing customer
+        String theEmail = customer.getEmail();
+
+        Customer customerFromDB = customerRepository.findByEmail(theEmail);
+
+        if (customerFromDB != null) {
+            // we found them ... let's assign them accordingly
+            customer = customerFromDB;
+        }
+
         customer.add(order);
 
         // save to the database
@@ -60,12 +71,3 @@ public class CheckoutServiceImpl implements CheckoutService {
         return UUID.randomUUID().toString();
     }
 }
-
-
-
-
-
-
-
-
-
